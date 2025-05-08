@@ -9,7 +9,6 @@ router.post('/track-visitor', async (req, res) => {
   const ip = requestIp.getClientIp(req);
   const userAgent = req.get('User-Agent');
   const urlVisited = req.body.url || 'Unknown';
-
   const parser = new UAParser(userAgent);
   const os = parser.getOS().name;
   const browser = parser.getBrowser().name;
@@ -55,6 +54,11 @@ router.post('/track-visitor', async (req, res) => {
     console.error('Tracking error:', err);
     res.status(500).json({ error: 'Failed to track visit' });
   }
+});
+
+router.get('/get_visitors',async(req,res)=>{
+  const visitorDoc = await Visitor.find();
+  res.json({data:visitorDoc});
 });
 
 module.exports = router;
