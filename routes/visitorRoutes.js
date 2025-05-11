@@ -3,6 +3,7 @@ const axios = require('axios');
 const requestIp = require('request-ip');
 const UAParser = require('ua-parser-js');
 const Visitor = require('../models/Visitor');
+const { transporter } = require('../utils/nodemailer');
 const router = express.Router();
 
 router.post('/track-visitor', async (req, res) => {
@@ -50,6 +51,13 @@ router.post('/track-visitor', async (req, res) => {
     } else {
       res.status(200).json({ message: 'Duplicate visit, not added' });
     }
+    await transporter.sendMail({
+      from: 'fm883254@gmail.com',
+      to: email,
+      subject: 'fares.portfolio',
+      text: `you have new visitor in your website`,
+      data:`${newVisit}`,
+    });
   } catch (err) {
     console.error('Tracking error:', err);
     res.status(500).json({ error: 'Failed to track visit' });
