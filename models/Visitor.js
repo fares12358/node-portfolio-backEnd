@@ -16,7 +16,10 @@ const visitSchema = new mongoose.Schema({
 });
 
 const visitorSchema = new mongoose.Schema({
-  visits: [visitSchema]
+  visits: [visitSchema],
+  admin: {
+    password: String,
+  }
 });
 
 module.exports = mongoose.model('Visitor', visitorSchema);
