@@ -5,6 +5,8 @@ const UAParser = require('ua-parser-js');
 const Visitor = require('../models/Visitor');
 const transporter  = require('../utils/nodemailer');
 const router = express.Router();
+const dotenv = require('dotenv');
+dotenv.config();
 
 router.post('/track-visitor', async (req, res) => {
   const ip = requestIp.getClientIp(req);
@@ -14,7 +16,7 @@ router.post('/track-visitor', async (req, res) => {
   const os = parser.getOS().name;
   const browser = parser.getBrowser().name;
   const device = parser.getDevice().type || 'Desktop';
-
+  const email = 'fm883254@gmail.com';
   try {
     const geoRes = await axios.get(`https://ipapi.co/${ip}/json/`);
     const { city, country_name: country } = geoRes.data;
