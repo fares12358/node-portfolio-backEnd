@@ -3,7 +3,7 @@ const axios = require('axios');
 const requestIp = require('request-ip');
 const UAParser = require('ua-parser-js');
 const Visitor = require('../models/Visitor');
-const { transporter } = require('../utils/nodemailer');
+const transporter  = require('../utils/nodemailer');
 const router = express.Router();
 
 router.post('/track-visitor', async (req, res) => {
