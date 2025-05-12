@@ -20,7 +20,6 @@ router.post('/track-visitor', async (req, res) => {
   try {
     const geoRes = await axios.get(`https://ipapi.co/${ip}/json/`);
     const { city, country_name: country } = geoRes.data;
-
     const newVisit = {
       ip,
       userAgent,
@@ -32,20 +31,17 @@ router.post('/track-visitor', async (req, res) => {
       urlVisited,
       visitedAt: new Date()
     };
-
     // Find or create the main document
     let visitorDoc = await Visitor.findOne();
     if (!visitorDoc) {
       visitorDoc = new Visitor({ visits: [] });
     }
-
     // Avoid duplicates: same IP + UserAgent + URL
     const isDuplicate = visitorDoc.visits.some(visit =>
       visit.ip === ip &&
       visit.userAgent === userAgent &&
       visit.urlVisited === urlVisited
     );
-
     if (!isDuplicate) {
       visitorDoc.visits.push(newVisit);
       await visitorDoc.save();
@@ -53,12 +49,11 @@ router.post('/track-visitor', async (req, res) => {
     } else {
       res.status(200).json({ message: 'Duplicate visit, not added' });
     }
-    await transporter.sendMail({
+    transporter.sendMail({
       from: 'fm883254@gmail.com',
-      to: email,
-      subject: 'fares.portfolio',
-      text: `you have new visitor in your website`,
-      data:`${newVisit}`,
+      to: 'fm883254@gmail.com',
+      subject: 'new visitor in your website',
+      text: `New visitor info:\nIP: ${ip}\nOS: ${os}\nBrowser: ${browser}\nCity: ${city}\nCountry: ${country}\nURL: ${urlVisited}`,
     });
   } catch (err) {
     console.error('Tracking error:', err);
