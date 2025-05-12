@@ -3,7 +3,7 @@ const axios = require('axios');
 const requestIp = require('request-ip');
 const UAParser = require('ua-parser-js');
 const Visitor = require('../models/Visitor');
-const transporter  = require('../utils/nodemailer');
+const transporter = require('../utils/nodemailer');
 const router = express.Router();
 const dotenv = require('dotenv');
 const { protect } = require('../middleware/adminToken');
@@ -45,25 +45,26 @@ router.post('/track-visitor', async (req, res) => {
     if (!isDuplicate) {
       visitorDoc.visits.push(newVisit);
       await visitorDoc.save();
+      await transporter.sendMail({
+        from: 'fm883254@gmail.com',
+        to: 'fm883254@gmail.com',
+        subject: 'new visitor in your website',
+        text: `New visitor info:\nIP: ${ip}\nOS: ${os}\nBrowser: ${browser}\nCity: ${city}\nCountry: ${country}\nURL: ${urlVisited}`,
+      });
       res.status(200).json({ message: 'Visit tracked successfully' });
     } else {
       res.status(200).json({ message: 'Duplicate visit, not added' });
     }
-    await transporter.sendMail({
-      from: 'fm883254@gmail.com',
-      to: 'fm883254@gmail.com',
-      subject: 'new visitor in your website',
-      text: `New visitor info:\nIP: ${ip}\nOS: ${os}\nBrowser: ${browser}\nCity: ${city}\nCountry: ${country}\nURL: ${urlVisited}`,
-    });
+
   } catch (err) {
     console.error('Tracking error:', err);
     res.status(500).json({ error: 'Failed to track visit' });
   }
 });
 
-router.get('/get_visitors',protect,async(req,res)=>{
+router.get('/get_visitors', protect, async (req, res) => {
   const visitorDoc = await Visitor.find();
-  res.json({data:visitorDoc});
+  res.json({ data: visitorDoc });
 });
 
 module.exports = router;
