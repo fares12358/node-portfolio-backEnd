@@ -17,7 +17,6 @@ router.post('/track-visitor', async (req, res) => {
   const os = parser.getOS().name;
   const browser = parser.getBrowser().name;
   const device = parser.getDevice().type || 'Desktop';
-  const email = 'fm883254@gmail.com';
   try {
     const geoRes = await axios.get(`https://ipapi.co/${ip}/json/`);
     const { city, country_name: country } = geoRes.data;
@@ -50,7 +49,7 @@ router.post('/track-visitor', async (req, res) => {
     } else {
       res.status(200).json({ message: 'Duplicate visit, not added' });
     }
-    transporter.sendMail({
+    await transporter.sendMail({
       from: 'fm883254@gmail.com',
       to: 'fm883254@gmail.com',
       subject: 'new visitor in your website',
