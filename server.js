@@ -64,8 +64,6 @@ async function createAdminPassword() {
 
 // createAdminPassword();
 
-
-
 app.post('/adminLogin', async (req, res) => {
   try {
     const {password} = req.body;

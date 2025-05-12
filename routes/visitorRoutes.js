@@ -6,6 +6,7 @@ const Visitor = require('../models/Visitor');
 const transporter  = require('../utils/nodemailer');
 const router = express.Router();
 const dotenv = require('dotenv');
+const { protect } = require('../middleware/adminToken');
 dotenv.config();
 
 router.post('/track-visitor', async (req, res) => {
@@ -61,7 +62,7 @@ router.post('/track-visitor', async (req, res) => {
   }
 });
 
-router.get('/get_visitors',async(req,res)=>{
+router.get('/get_visitors',protect,async(req,res)=>{
   const visitorDoc = await Visitor.find();
   res.json({data:visitorDoc});
 });
