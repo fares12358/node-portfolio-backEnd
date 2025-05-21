@@ -9,6 +9,9 @@ const visitSchema = new mongoose.Schema({
   city: String,
   country: String,
   urlVisited: String,
+  role:String,
+  heardFrom :String,
+  counter :Number,
   visitedAt: {
     type: Date,
     default: Date.now,
