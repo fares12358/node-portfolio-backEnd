@@ -73,7 +73,11 @@ router.post('/track-visitor', async (req, res) => {
         Browser: ${browser}
         City: ${city}
         Country: ${country}
-        URL: ${urlVisited}`
+        URL: ${urlVisited}
+        role: ${role}
+        heardFrom:${heardFrom}
+        `
+
       });
 
       return res.status(200).json({ message: 'New visit tracked successfully' });
@@ -103,7 +107,10 @@ router.post('/track-visitor', async (req, res) => {
         Browser: ${browser}
         City: ${city}
         Country: ${country}
-        URL: ${urlVisited}`
+        URL: ${urlVisited}
+        role: ${role}
+        heardFrom:${heardFrom}
+        `
       });
 
       return res.status(200).json({ message: 'Repeat visit counted' });
