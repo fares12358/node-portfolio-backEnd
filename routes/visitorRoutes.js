@@ -122,7 +122,7 @@ router.post('/track-visitor', async (req, res) => {
 });
 
 
-router.get('/get_visitors', async (req, res) => {
+router.get('/get_visitors',protect, async (req, res) => {
   try {
     // 1. Grab all Visitor docs
     const visitorDocs = await Visitor.find().exec();
