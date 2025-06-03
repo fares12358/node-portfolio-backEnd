@@ -122,7 +122,7 @@ router.post('/track-visitor', async (req, res) => {
 });
 
 
-router.get('/get_visitors', protect, async (req, res) => {
+router.get('/get_visitors', async (req, res) => {
   try {
     // 1. Grab all Visitor docs
     const visitorDocs = await Visitor.find().exec();
@@ -134,12 +134,53 @@ router.get('/get_visitors', protect, async (req, res) => {
         return b.visitedAt - a.visitedAt;
       });
     });
+    const documents = await Visitor.find().select('visits.country visits.heardFrom visits.role');
+    const countryCountMap = new Map();
+    const heardFromCountMap = new Map();
+    const roleCountMap = new Map();
 
-    res.json({ data: visitorDocs });
+    documents.forEach(doc => {
+      doc.visits.forEach(visit => {
+        // Count countries
+        const country = visit.country;
+        if (country) {
+          countryCountMap.set(country, (countryCountMap.get(country) || 0) + 1);
+        }
+
+        // Count heardFrom
+        const source = visit.heardFrom;
+        if (source) {
+          heardFromCountMap.set(source, (heardFromCountMap.get(source) || 0) + 1);
+        }
+
+        // Count roles
+        const role = visit.role;
+        if (role) {
+          roleCountMap.set(role, (roleCountMap.get(role) || 0) + 1);
+        }
+      });
+    });
+
+    const countries = Array.from(countryCountMap.entries()).map(
+      ([country, count]) => ({ country, count })
+    );
+
+    const heardFrom = Array.from(heardFromCountMap.entries()).map(
+      ([source, count]) => ({ source, count })
+    );
+
+    const roles = Array.from(roleCountMap.entries()).map(
+      ([role, count]) => ({ role, count })
+    );
+
+    res.json({ data: visitorDocs, countries: countries, heardFrom: heardFrom, roles: roles });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Failed to fetch/sort visitors' });
+    res.status(500).json({ error: 'Failed to fetch/sort visitors /countries' });
   }
 });
+
+
+
 
 module.exports = router;
